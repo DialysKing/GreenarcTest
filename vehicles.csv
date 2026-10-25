@@ -1,0 +1,9 @@
+vehicle_id,vehicle_class,fuel_type,depot,illustrative_benchmark_l_per_100km
+VEH01,van,diesel,Depot North,10.5
+VEH02,van,diesel,Depot South,10.5
+VEH03,van,diesel,Depot North,10.5
+VEH04,van,diesel,Depot South,10.5
+VEH05,rigid_truck,diesel,Depot North,24
+VEH06,rigid_truck,diesel,Depot South,24
+VEH07,articulated_truck,diesel,Depot North,31
+VEH08,articulated_truck,diesel,Depot South,31

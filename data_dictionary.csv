@@ -1,0 +1,39 @@
+table,field,unit_or_type,definition
+vehicles,vehicle_id,text,Join to trips.vehicle_id and driver_events.vehicle_id.
+vehicles,vehicle_class,category,"van, rigid_truck, articulated_truck. Compare similar vehicles."
+vehicles,fuel_type,category,All vehicles use diesel in this exercise.
+vehicles,depot,category,Fictional depot label; no actual location.
+vehicles,illustrative_benchmark_l_per_100km,litres/100 km,"Fictional comparison reference, not a manufacturer specification, target or industry standard."
+drivers,driver_id,text,Join via trips.driver_id; driver events also carry a source driver_id.
+drivers,display_name,text,Anonymous fictional label only.
+trips,trip_id,text,Unique key; joins telemetry_samples.trip_id and driver_events.trip_id.
+trips,vehicle_id,text,Vehicle assigned to the trip.
+trips,driver_id,text,Authoritative driver assignment for this exercise.
+trips,start_time_utc,ISO 8601,Inclusive trip start. Parse as timezone-aware datetime.
+trips,end_time_utc,ISO 8601,Trip end. Interval observations may end exactly at this time.
+trips,route_type,category,"urban, mixed, motorway; context matters when comparing results."
+trips,load_band,category,"light, medium, heavy; fictional operational context."
+trips,weather,category,"dry or wet; fictional context, not a causal explanation."
+trips,planned_distance_km,km,Planning estimate. Do not use as measured distance or assume deviation implies misuse.
+telemetry_samples,export_row_id,text,Unique export row identifier; not the observation identity.
+telemetry_samples,sample_id,text,Stable device observation identity. Retries may repeat this key.
+telemetry_samples,trip_id,text,Join to trips.trip_id.
+telemetry_samples,event_time_utc,ISO 8601,End of the interval. Normally Z; respect an explicit offset if present.
+telemetry_samples,received_time_utc,ISO 8601,"Ingestion timestamp, which can be later than observation time."
+telemetry_samples,interval_seconds,seconds,"Expected interval length: 300. Observation covers (event_time - interval_seconds, event_time]."
+telemetry_samples,engine_on_seconds,seconds,"Engine-on time within this interval. In the source model, at most interval_seconds."
+telemetry_samples,distance_km,km/interval,"Incremental distance, not odometer. Can be summed over valid, deduplicated intervals."
+telemetry_samples,fuel_used_l,litres/interval,"Incremental fuel use, not tank level or refuelling. Includes fuel used while idling. Blank is unavailable, not zero."
+telemetry_samples,idle_seconds,seconds/interval,Stationary time with engine running. Subset of engine_on_seconds. Does not establish avoidable waste.
+telemetry_samples,average_speed_kph,km/hour,"Mean speed over the whole five-minute interval, including stationary time; rounded distance / (interval_seconds / 3600)."
+driver_events,export_row_id,text,Unique export row identifier; not event identity.
+driver_events,event_id,text,Stable detector event identity; deduplicate retries on this key.
+driver_events,trip_id,text,Join to trips.trip_id when present in the trip table.
+driver_events,vehicle_id,text,Source vehicle assignment; check against the trip.
+driver_events,driver_id,text,Source driver assignment; may be blank. Valid trip metadata may resolve it.
+driver_events,event_time_utc,ISO 8601,Start of detector event. Parse as timezone-aware datetime.
+driver_events,event_type,category,"harsh_braking, harsh_acceleration, speeding_signal."
+driver_events,detector_severity,category,"low, medium, high. Fictional detector output, not a validated safety score."
+driver_events,duration_seconds,seconds,Event duration. More than one type may occur in the same sample interval.
+driver_events,recorded_speed_kph,km/hour,"Speed during the event, not interval average."
+driver_events,detector_limit_kph,km/hour,"Populated for speeding_signal only. Fictional detector context, not a legal finding or vehicle-specific road rule."
