@@ -27,7 +27,11 @@
 
   async function init() {
     try {
-      if (typeof Papa === 'undefined' || typeof Highcharts === 'undefined') throw new Error('A required library did not load (Papa Parse or Highcharts). Check your internet connection.');
+      const missing = [];
+      if (typeof Papa === 'undefined') missing.push('Papa Parse');
+      if (typeof Highcharts === 'undefined') missing.push('Highcharts');
+      if (missing.length) throw new Error('Not loaded: ' + missing.join(', ') + '. index.html must be the latest version (it needs the Highcharts script tag, not Chart.js), and you must be online.');
+      if (!$('tripInput')) throw new Error('index.html is out of date: it does not match this app.js. Replace it with the latest index.html.');
       const keys = Object.keys(DATA_FILES);
       const loaded = await Promise.all(keys.map(k => loadCsv(DATA_FILES[k])));
       const raw = {}; keys.forEach((k, i) => { raw[k] = loaded[i]; });
