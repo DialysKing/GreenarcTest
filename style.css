@@ -1,47 +1,209 @@
+/* ==========================================================================
+   Trip analyser styles
+   Sections: 1 Variables  2 Base  3 Header  4 Layout  5 Controls
+             6 Trip details  7 Chart  8 Messages  9 Footer  10 Small screens
+   ========================================================================== */
+
+
+/* 1. Variables ------------------------------------------------------------ */
 :root {
-  --green: #14392e; --accent: #2f7d5b; --bg: #f4f6f5; --card: #fff; --text: #1d2b26;
-  --muted: #62736c; --line: #dfe6e2; --warn: #b4540a; --warnbg: #fff4e5; --bad: #a12626;
+  --green-dark: #14392e;
+  --green: #2f7d5b;
+  --green-light: #b9d3c7;
+
+  --bg: #f4f6f5;
+  --card: #ffffff;
+  --border: #dfe6e2;
+
+  --text: #1d2b26;
+  --muted: #62736c;
+
+  --warn-text: #6b3a07;
+  --warn-bg: #fff4e5;
+  --warn-border: #f0cf9d;
+  --error: #a12626;
+
+  --radius: 10px;
 }
-* { box-sizing: border-box; }
-body { margin: 0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); }
-.top { background: var(--green); color: #fff; padding: 18px 24px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
-.top h1 { margin: 0; font-size: 22px; }
-.sub { margin: 2px 0 0; color: #b9d3c7; font-size: 13px; }
-nav a { color: #fff; text-decoration: none; margin-left: 16px; font-size: 14px; opacity: .85; }
-nav a:hover { opacity: 1; text-decoration: underline; }
-main { max-width: 1200px; margin: 0 auto; padding: 20px 16px 8px; }
-h2 { margin: 28px 0 4px; font-size: 18px; color: var(--green); }
-h3 { margin: 0 0 8px; font-size: 14px; }
-.hint { color: var(--muted); font-size: 12.5px; margin: 2px 0 10px; font-weight: normal; }
-.state { padding: 24px; text-align: center; background: var(--card); border: 1px dashed var(--line); border-radius: 10px; color: var(--muted); margin: 12px 0; }
-.state.error { color: var(--bad); border-color: var(--bad); text-align: left; }
-.banner { background: var(--warnbg); border: 1px solid #f0cf9d; color: #6b3a07; padding: 10px 14px; border-radius: 8px; font-size: 13.5px; }
-.panel, .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
-.cards2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
-.card h3 { font-size: 16px; color: var(--green); }
-.card .big { font-size: 13.5px; }
-.card ul { margin: 8px 0; padding-left: 18px; font-size: 13.5px; }
-.card .caveat { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; margin-top: 8px; }
-.tag { display: inline-block; background: #e6f1ec; color: var(--accent); font-size: 12px; padding: 1px 8px; border-radius: 999px; margin-right: 6px; }
-.filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin: 10px 0 14px; }
-.filters label { display: flex; flex-direction: column; font-size: 12px; color: var(--muted); gap: 3px; }
-select, input[type=date], button { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
-button { cursor: pointer; } button:hover { background: #eef3f0; }
-.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 14px; }
-.kpi { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
-.kpi .v { font-size: 24px; font-weight: 650; color: var(--green); }
-.kpi .l { font-size: 12.5px; color: var(--muted); }
-.kpi .n { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
-.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
-.chartbox { position: relative; height: 280px; } .chartbox.short { height: 240px; }
-.tablewrap { overflow-x: auto; }
-table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
-th, td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
-th:first-child, td:first-child, th:nth-child(2), td:nth-child(2), th:nth-child(3), td:nth-child(3) { text-align: left; }
-th { cursor: pointer; color: var(--muted); font-weight: 600; user-select: none; }
-tbody tr { cursor: pointer; } tbody tr:hover { background: #f1f6f3; }
-tr.sel { background: #e3f0e9; }
-.flag { color: var(--warn); font-weight: 600; }
-#qList { margin: 0; padding-left: 18px; font-size: 13.5px; } #qList li { margin: 4px 0; }
-footer { max-width: 1200px; margin: 10px auto 30px; padding: 0 16px; color: var(--muted); font-size: 12.5px; }
-@media (max-width: 600px) { .top { padding: 14px 16px; } nav a { margin: 0 12px 0 0; } .chartbox { height: 240px; } }
+
+
+/* 2. Base ----------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+pre {
+  margin: 8px 0 0;
+  font-size: 11px;
+  white-space: pre-wrap;
+}
+
+
+/* 3. Header --------------------------------------------------------------- */
+.top {
+  padding: 18px 24px;
+  background: var(--green-dark);
+  color: #fff;
+}
+
+.top h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.sub {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--green-light);
+}
+
+
+/* 4. Layout --------------------------------------------------------------- */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 16px 8px;
+}
+
+.panel {
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+
+/* 5. Controls (trip ID, metric, toggles) ---------------------------------- */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+  margin: 6px 0 14px;
+}
+
+.controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Checkbox + text on one line */
+.controls .check {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 7px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+#tripInput {
+  width: 130px;
+  text-transform: uppercase;
+}
+
+select,
+input,
+button {
+  padding: 6px 8px;
+  font: inherit;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  background: #eef3f0;
+}
+
+
+/* 6. Trip details --------------------------------------------------------- */
+.meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px 16px;
+  font-size: 13.5px;
+}
+
+/* Small grey label above each value */
+.meta span {
+  display: block;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+
+/* 7. Chart ---------------------------------------------------------------- */
+#chart {
+  height: 420px;
+}
+
+.note {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+
+/* 8. Messages (loading, errors, data-quality banner) ---------------------- */
+.state {
+  margin: 12px 0;
+  padding: 24px;
+  text-align: center;
+  color: var(--muted);
+  background: var(--card);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+.state.error {
+  text-align: left;
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.banner {
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: var(--warn-text);
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  border-radius: 8px;
+}
+
+
+/* 9. Footer --------------------------------------------------------------- */
+footer {
+  max-width: 1200px;
+  margin: 10px auto 30px;
+  padding: 0 16px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+
+/* 10. Small screens ------------------------------------------------------- */
+@media (max-width: 600px) {
+  .top {
+    padding: 14px 16px;
+  }
+
+  #chart {
+    height: 320px;
+  }
+}
