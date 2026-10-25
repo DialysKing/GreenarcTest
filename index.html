@@ -1,1 +1,74 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fleet insights - Meadow Distribution</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Pinned CDN versions -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>Fleet insights</h1>
+      <p class="sub">Meadow Distribution &middot; 8 diesel vehicles &middot; <span id="period">loading&hellip;</span> &middot; synthetic data</p>
+    </div>
+    <nav>
+      <a href="#findings">Findings</a><a href="#explore">Explore</a><a href="#quality">Data quality</a>
+    </nav>
+  </header>
 
+  <main>
+    <div id="loading" class="state">Loading and cleaning data&hellip;</div>
+    <div id="error" class="state error" hidden></div>
+
+    <div id="app" hidden>
+      <div id="qualityBanner" class="banner"></div>
+
+      <section id="findings">
+        <h2>Two things worth checking</h2>
+        <p class="hint">Calculated from the whole period, independent of the filters below. Signals for investigation, not conclusions.</p>
+        <div class="cards2" id="findingCards"></div>
+      </section>
+
+      <section id="explore">
+        <h2>Explore the fleet</h2>
+        <div class="filters">
+          <label>Vehicle class<select id="fClass"></select></label>
+          <label>Vehicle<select id="fVehicle"></select></label>
+          <label>Route type<select id="fRoute"></select></label>
+          <label>From<input type="date" id="fFrom"></label>
+          <label>To<input type="date" id="fTo"></label>
+          <button id="fReset" type="button">Reset</button>
+        </div>
+        <div id="empty" class="state" hidden>No telemetry matches these filters.</div>
+
+        <div class="kpis" id="kpis"></div>
+
+        <div class="grid2">
+          <div class="panel"><h3>Fuel use vs illustrative benchmark</h3><div class="chartbox"><canvas id="chFuel"></canvas></div></div>
+          <div class="panel"><h3>Idle share by day (% of engine-on time)</h3><div class="chartbox"><canvas id="chIdle"></canvas></div></div>
+        </div>
+        <div class="panel"><h3>Driving-event signals per 100 km</h3><div class="chartbox short"><canvas id="chEvents"></canvas></div>
+          <p class="hint">Detector output, not proof of unsafe driving. Rates depend on route type and exposure; urban driving produces more signals per km.</p></div>
+
+        <div class="panel">
+          <h3>Vehicles <span class="hint">(click a header to sort, a row to drill into that vehicle)</span></h3>
+          <div class="tablewrap"><table id="vTable"></table></div>
+        </div>
+      </section>
+
+      <section id="quality">
+        <h2>Data quality and limits</h2>
+        <div class="panel"><ul id="qList"></ul></div>
+      </section>
+    </div>
+  </main>
+  <footer>Fuel is measured per interval and already includes idling. Benchmarks are illustrative. No cost or CO&#8322; figures are shown because no inputs were supplied.</footer>
+
+  <script src="cleaning.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
