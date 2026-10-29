@@ -31,7 +31,9 @@
       if (typeof Papa === 'undefined') missing.push('Papa Parse');
       if (typeof Highcharts === 'undefined') missing.push('Highcharts');
       if (missing.length) throw new Error('Not loaded: ' + missing.join(', ') + '. index.html must be the latest version (it needs the Highcharts script tag, not Chart.js), and you must be online.');
-      if (!$('tripInput')) throw new Error('index.html is out of date: it does not match this app.js. Replace it with the latest index.html.');
+      const ids = ['tripInput', 'tripList', 'loadBtn', 'metric', 'cumul', 'showEvents', 'tripView', 'tripError', 'meta', 'chart', 'chartNote', 'quality'];
+      const absent = ids.filter(id => !$(id));
+      if (absent.length) throw new Error('index.html does not match this app.js (missing element: ' + absent.join(', ') + '). Replace index.html, app.js and cleaning.js with the latest versions together.');
       const keys = Object.keys(DATA_FILES);
       const loaded = await Promise.all(keys.map(k => loadCsv(DATA_FILES[k])));
       const raw = {}; keys.forEach((k, i) => { raw[k] = loaded[i]; });
@@ -51,7 +53,7 @@
       $('error').hidden = false;
       $('error').innerHTML = '<strong>The data could not be loaded.</strong><br>' + esc(err.message) +
         '<pre style="white-space:pre-wrap;font-size:11px;margin:8px 0 0">' + esc(String(err.stack || '').split('\n').slice(0, 4).join('\n')) + '</pre>' +
-        '<br><small>If you opened index.html directly from disk, run a local web server instead (see README).</small>';
+        '<br><small>If you opened index.html directly from disk, run a local web server instead.</small>';
     }
   }
   function fromHash() {
