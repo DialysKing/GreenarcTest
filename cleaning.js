@@ -14,13 +14,13 @@
     DECIMALS: 4                     // rounding for cumulative sums (avoids 0.30000000000000004)
   };
 
-  // Metrics a chart can show. key = incremental column, cumKey = cumulative column.
+  // Metrics a chart can show. key = incremental column, cumulKey = cumulative column.
   // "Time" is engine-on seconds; idle seconds are a subset of it (data dictionary).
   const METRICS = [
-    { id: 'distance', label: 'Distance',        unit: 'km',      key: 'km',      cumKey: 'cumKm',      partialKey: 'cumKmPartial' },
-    { id: 'fuel',     label: 'Fuel used',       unit: 'L',       key: 'fuelL',   cumKey: 'cumFuelL',   partialKey: 'cumFuelPartial' },
-    { id: 'idle',     label: 'Idle time',       unit: 'seconds', key: 'idleS',   cumKey: 'cumIdleS',   partialKey: 'cumIdlePartial' },
-    { id: 'engine',   label: 'Engine-on time',  unit: 'seconds', key: 'engineS', cumKey: 'cumEngineS', partialKey: 'cumIdlePartial' }
+    { id: 'distance', label: 'Distance',        unit: 'km',      key: 'km',      cumulKey: 'cumulKm',      partialKey: 'cumulKmPartial' },
+    { id: 'fuel',     label: 'Fuel used',       unit: 'L',       key: 'fuelL',   cumulKey: 'cumulFuelL',   partialKey: 'cumulFuelPartial' },
+    { id: 'idle',     label: 'Idle time',       unit: 'seconds', key: 'idleS',   cumulKey: 'cumulIdleS',   partialKey: 'cumulIdlePartial' },
+    { id: 'engine',   label: 'Engine-on time',  unit: 'seconds', key: 'engineS', cumulKey: 'cumulEngineS', partialKey: 'cumulIdlePartial' }
   ];
 
   // ---------- small helpers ----------
@@ -131,8 +131,8 @@
         if (r.km === null) kmP = true; else km += r.km;
         if (r.fuelL === null) fuelP = true; else fuel += r.fuelL;
         if (r.idleS === null) idleP = true; else { idle += r.idleS; engine += r.engineS; }
-        r.cumKm = round(km); r.cumFuelL = round(fuel); r.cumIdleS = round(idle); r.cumEngineS = round(engine);
-        r.cumKmPartial = kmP; r.cumFuelPartial = fuelP; r.cumIdlePartial = idleP;
+        r.cumulKm = round(km); r.cumulFuelL = round(fuel); r.cumulIdleS = round(idle); r.cumulEngineS = round(engine);
+        r.cumulKmPartial = kmP; r.cumulFuelPartial = fuelP; r.cumulIdlePartial = idleP;
       });
       trip.missingIntervals = Math.max(0, trip.expectedIntervals - rows.length);
       if (trip.missingIntervals > 0) { q.missingIntervals += trip.missingIntervals; q.tripsWithGaps++; }
