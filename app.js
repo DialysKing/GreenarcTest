@@ -43,7 +43,7 @@
       $('metric').innerHTML = Fleet.METRICS.map(m => '<option value="' + m.id + '">' + esc(m.label) + ' (' + m.unit + ')</option>').join('');
       $('loadBtn').onclick = () => show($('tripInput').value);
       $('tripInput').onkeydown = e => { if (e.key === 'Enter') show(e.target.value); };
-      ['metric', 'cum', 'showEvents'].forEach(id => { $(id).onchange = draw; });
+      ['metric', 'cumul', 'showEvents'].forEach(id => { $(id).onchange = draw; });
       window.addEventListener('hashchange', fromHash);
       fromHash() || show(data.tripIds[0]);
     } catch (err) {
@@ -94,13 +94,13 @@
   function draw() {
     if (!current) return;
     const m = Fleet.METRICS.find(x => x.id === $('metric').value) || Fleet.METRICS[0];
-    const cum = $('cum').checked;
+    const cumul = $('cumul').checked;
     const { trip, samples, events } = current;
-    const key = cum ? m.cumKey : m.key;
+    const key = cumul ? m.cumulKey : m.key;
 
     const points = samples.map(s => {
-      const partial = cum && s[m.partialKey];
-      const p = { x: s.time, y: s[key], custom: { seq: s.seq, inc: s[m.key], cum: s[m.cumKey], partial, gap: s.gapBefore } };
+      const partial = cumul && s[m.partialKey];
+      const p = { x: s.time, y: s[key], custom: { seq: s.seq, inc: s[m.key], cumul: s[m.cumulKey], partial, gap: s.gapBefore } };
       if (partial || s.gapBefore) p.marker = { fillColor: partial ? '#fff' : ORANGE, lineColor: ORANGE, lineWidth: 2, radius: 5 };
       return p;
     });
@@ -114,7 +114,7 @@
       chart: { type: 'line', zoomType: 'x' },
       time: { useUTC: true },
       credits: { enabled: false },
-      title: { text: trip.tripId + ' – ' + m.label + (cum ? ' (cumulative)' : ' (per sample)'), style: { fontSize: '15px' } },
+      title: { text: trip.tripId + ' – ' + m.label + (cumul ? ' (cumulative)' : ' (per sample)'), style: { fontSize: '15px' } },
       xAxis: { type: 'datetime', title: { text: 'Time (UTC)' }, plotLines },
       yAxis: { title: { text: m.label + ' (' + m.unit + ')' }, min: 0 },
       legend: { enabled: false },
@@ -124,7 +124,7 @@
           const c = this.point.options.custom;
           let h = '<b>' + hhmm(this.x) + ' UTC</b> &middot; sample ' + c.seq + ' of ' + samples.length + '<br>' +
             m.label + ' this interval: <b>' + num(c.inc) + ' ' + m.unit + '</b><br>' +
-            m.label + ' cumulative: <b>' + num(c.cum) + ' ' + m.unit + '</b>';
+            m.label + ' cumulative: <b>' + num(c.cumul) + ' ' + m.unit + '</b>';
           if (c.inc === null) h += '<br><i>Reading unavailable (not zero)</i>';
           if (c.partial) h += '<br><i>Cumulative is a lower bound: an earlier reading was unavailable</i>';
           if (c.gap) h += '<br><i>One or more samples are missing before this point</i>';
@@ -140,12 +140,12 @@
         '<pre style="white-space:pre-wrap;font-size:11px">' + esc(String(err.stack || '').split('\n').slice(0, 4).join('\n')) + '</pre>';
     }
 
-    const hasPartial = cum && samples.some(s => s[m.partialKey]);
+    const hasPartial = cumul && samples.some(s => s[m.partialKey]);
     const hasGap = samples.some(s => s.gapBefore);
     $('chartNote').textContent =
       (hasPartial ? 'Hollow orange points: the running total is a lower bound because an earlier reading was unavailable. ' : '') +
       (hasGap ? 'Filled orange points: samples are missing just before this point. ' : '') +
-      (!cum && samples.some(s => s[key] === null) ? 'Gaps in the line are unavailable readings. ' : '') +
+      (!cumul && samples.some(s => s[key] === null) ? 'Gaps in the line are unavailable readings. ' : '') +
       'Drag on the chart to zoom.';
   }
 
